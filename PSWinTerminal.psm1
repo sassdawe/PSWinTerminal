@@ -57,3 +57,6 @@ if ($env:WT_SESSION) {
 
     Export-ModuleMember -Function *
 }
+else {
+    Throw "You need to use Windows Terminal to use PSWinTerminal"
+}
