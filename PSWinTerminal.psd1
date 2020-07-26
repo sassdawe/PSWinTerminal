@@ -78,7 +78,7 @@ Description = 'PowerShell module to manipulate Windows Terminal'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Get-WTCurrentTheme','Get-WTTheme')
+FunctionsToExport = @('Get-WTCurrentTheme','Get-WTTheme','Set-WTTheme')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 #CmdletsToExport = @()
