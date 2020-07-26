@@ -33,6 +33,22 @@ if ($env:WT_SESSION) {
         }
     }
     function Get-WTTheme {
+        <#
+            .SYNOPSIS
+                Get-WTTheme will get the current Windows Terminal theme
+            .DESCRIPTION
+                Get-WTTheme will get the current Windows Terminal theme, if these is no theme configured it'll return the default theme.
+            .INPUTS
+                These is no input for Get-WTTheme
+            .OUTPUTS
+                Name of the current theme
+            .EXAMPLE
+                Get-WTTheme
+
+                Get-WTTheme will get the current Windows Terminal theme
+            .LINK
+                https://github.com/sassdawe/PSWinTerminal
+        #>
         [CmdletBinding()]
         param (
         )
@@ -52,6 +68,22 @@ if ($env:WT_SESSION) {
     }
 
     function Show-WTTheme {
+        <#
+            .SYNOPSIS
+                Show-WTTheme will show all available Windows Terminal themes
+            .DESCRIPTION
+                Show-WTTheme will show all available Windows Terminal themes.
+            .INPUTS
+                These is no input for Show-WTTheme
+            .OUTPUTS
+                Array of available themes, the custom themes will have a (*) next to their names.
+            .EXAMPLE
+                Show-WTTheme
+
+                Show-WTTheme will show all available Windows Terminal themes
+            .LINK
+                https://github.com/sassdawe/PSWinTerminal
+        #>
         [CmdletBinding()]
         param (
         )
@@ -73,6 +105,22 @@ if ($env:WT_SESSION) {
     }
 
     function Set-WTTheme {
+        <#
+            .SYNOPSIS
+                Set-WTTheme will change current Windows Terminal theme
+            .DESCRIPTION
+                Set-WTTheme will change the current Windows Terminal theme.
+            .INPUTS
+                Name of the theme we want to use for the current Windows Terminal profile
+            .OUTPUTS
+                None.
+            .EXAMPLE
+                Set-WTTheme "Campbell Powershell"
+
+                Set-WTTheme will set current Windows Terminal theme to 'Campbell Powershell'
+            .LINK
+                https://github.com/sassdawe/PSWinTerminal
+        #>
         [CmdletBinding()]
         param (
             # Name of theme
@@ -123,12 +171,13 @@ if ($env:WT_SESSION) {
                 }
                 Write-Verbose "Set-WTTheme - End is in line: $currentProfileEndLine"
                 $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
-                    if ( ($i -ge $currentProfileStartLine -1) -and ($i -lt $currentProfileEndLine) ) {
+                    if ( ($i -ge $currentProfileStartLine - 1) -and ($i -lt $currentProfileEndLine) ) {
                         if ( $content[$i].Contains("colorScheme") ) {
                             Write-Verbose "Old $( Get-WTCurrentTheme )"
-                            $content[$i].Replace("`"colorScheme`": `"$( Get-WTCurrentTheme )`"","`"colorScheme`": `"$Theme`"")
+                            $content[$i].Replace("`"colorScheme`": `"$( Get-WTCurrentTheme )`"", "`"colorScheme`": `"$Theme`"")
                             Write-Verbose "New $Theme"
-                        } else {
+                        }
+                        else {
                             $content[$i]
                         }
                     }
