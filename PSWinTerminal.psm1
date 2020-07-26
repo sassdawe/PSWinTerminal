@@ -32,7 +32,7 @@ if ($env:WT_SESSION) {
         end {
         }
     }
-    function Get-WTCurrentTheme {
+    function Get-WTTheme {
         [CmdletBinding()]
         param (
         )
@@ -51,7 +51,7 @@ if ($env:WT_SESSION) {
         }
     }
 
-    function Get-WTTheme {
+    function Show-WTTheme {
         [CmdletBinding()]
         param (
         )

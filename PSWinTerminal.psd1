@@ -21,7 +21,7 @@ SOFTWARE.
 RootModule = 'PSWinTerminal.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.1'
+ModuleVersion = '1.0.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -78,7 +78,7 @@ Description = 'PowerShell module to manipulate Windows Terminal'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Get-WTCurrentTheme','Get-WTTheme','Set-WTTheme')
+FunctionsToExport = @('Get-WTTheme','Show-WTTheme','Set-WTTheme')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 #CmdletsToExport = @()
@@ -104,7 +104,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @("WinTerminal", "Windows Terminal", "Theme", "Settings")
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/sassdawe/PSWinTerminal/blob/main/LICENSE'
@@ -116,7 +116,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = 'First release with Get , Show, and Set-WTTheme support'
 
         # Prerelease string of this module
         # Prerelease = ''
