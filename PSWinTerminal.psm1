@@ -130,7 +130,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         )
 
         begin {
-            Write-Verbose "Set-WTTheme - begin"
+            Write-Verbose "Set-WTTheme - begin: $Theme"
         }
 
         process {
@@ -173,8 +173,8 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
                 $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
                     if ( ($i -ge $currentProfileStartLine - 1) -and ($i -lt $currentProfileEndLine) ) {
                         if ( $content[$i].Contains("colorScheme") ) {
-                            Write-Verbose "Old $( Get-WTCurrentTheme )"
-                            $content[$i].Replace("`"colorScheme`": `"$( Get-WTCurrentTheme )`"", "`"colorScheme`": `"$Theme`"")
+                            Write-Verbose "Old $( Get-WTTheme )"
+                            $content[$i].Replace("`"colorScheme`": `"$( Get-WTTheme )`"", "`"colorScheme`": `"$Theme`"")
                             Write-Verbose "New $Theme"
                         }
                         else {
