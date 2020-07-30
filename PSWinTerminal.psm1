@@ -1,5 +1,5 @@
 
-if ($env:WT_SESSION) {
+if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5))) {
     $Script:PSWinTerminalConfigPath = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState\settings.json"
     $Script:PSWinTerminalDefaultsPath = "C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.1.2021.0_x64__8wekyb3d8bbwe\defaults.json"
 
@@ -201,5 +201,5 @@ if ($env:WT_SESSION) {
     Export-ModuleMember -Function *
 }
 else {
-    Throw "You need to use Windows Terminal to use PSWinTerminal"
+    Throw "You need to use Windows Terminal to use PSWinTerminal, and Windows"
 }
