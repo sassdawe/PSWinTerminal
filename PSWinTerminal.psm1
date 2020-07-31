@@ -22,10 +22,10 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
                 $Script:PSWinTerminalCurentProfile = $Script:PSWinTerminalConfig.profiles.list.GetEnumerator() | Where-Object { $_.guid -eq $env:WT_PROFILE_ID }
 
                 if ($Script:PSWinTerminalCurentProfile.colorScheme) {
-                    $Global:PSWinTerminalCurentProfileHasColorScheme = $true
+                    $Script:PSWinTerminalCurentProfileHasColorScheme = $true
                 }
                 else {
-                    $Global:PSWinTerminalCurentProfileHasColorScheme = $false
+                    $Script:PSWinTerminalCurentProfileHasColorScheme = $false
                 }
             }
         }
@@ -56,11 +56,11 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         }
 
         process {
-            if ($Global:PSWinTerminalCurentProfileHasColorScheme) {
+            if ($Script:PSWinTerminalCurentProfileHasColorScheme) {
                 $Script:PSWinTerminalCurentProfile.colorScheme
             }
             else {
-                Write-Host "Campbell (Default)"
+                Write-Output "Campbell"
             }
         }
         end {
@@ -121,7 +121,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
             .LINK
                 https://github.com/sassdawe/PSWinTerminal
         #>
-        [CmdletBinding()]
+        [CmdletBinding(SupportsShouldProcess = $true)]
         param (
             # Name of theme
             [Parameter(Mandatory)]
@@ -134,11 +134,11 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         }
 
         process {
-            if ( $Global:PSWinTerminalCurentProfileHasColorScheme -eq $false ) {
+            if ( $Script:PSWinTerminalCurentProfileHasColorScheme -eq $false ) {
                 Write-Verbose "Set-WTTheme - PSWinTerminalCurentProfileHasColorScheme FALSE"
                 ( Get-Content -LiteralPath $Script:PSWinTerminalConfigPath | ForEach-Object { if ( $_.contains("`"guid`": `"$env:WT_PROFILE_ID`"") ) { "$_`n`t`t`t`t`"colorScheme`": `"$Theme`"," } else { $_ } } ) | Set-Content -LiteralPath $Script:PSWinTerminalConfigPath -PassThru:$false
                 Initialize-PSWinTerminalConfig
-                $Global:PSWinTerminalCurentProfileHasColorScheme = $true
+                $Script:PSWinTerminalCurentProfileHasColorScheme = $true
             }
             else {
                 Write-Verbose "Set-WTTheme - PSWinTerminalCurentProfileHasColorScheme TRUE"
@@ -198,7 +198,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
 
     Initialize-PSWinTerminalConfig
 
-    Export-ModuleMember -Function *
+    Export-ModuleMember -Function * -Variable 'PSWinTerminalCurentProfileHasColorScheme'
 }
 else {
     Throw "You need to use Windows Terminal to use PSWinTerminal, and Windows"

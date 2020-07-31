@@ -1,13 +1,13 @@
-$Global:ModuleName = "PSWinTerminal"
+$Script:ModuleName = "PSWinTerminal"
 # Write-Warning "`$ModuleName $ModuleName"
-$Global:ModuleManifestName = "$ModuleName.psd1"
+$Script:ModuleManifestName = "$ModuleName.psd1"
 # Write-Warning "`$ModuleManifestName $ModuleManifestName"
-$Global:ModuleManifestPath = "$PSScriptRoot\$ModuleManifestName"
+$Script:ModuleManifestPath = "$PSScriptRoot\$ModuleManifestName"
 # $ModuleManifestPathExists = Test-Path -LiteralPath $ModuleManifestPath
 # Write-Warning "`$ModuleManifestPath $ModuleManifestPath`t$ModuleManifestPathExists"
-$Global:ModuleScriptName = "$ModuleName.psm1"
+$Script:ModuleScriptName = "$ModuleName.psm1"
 # Write-Warning "`$ModuleScriptName $ModuleScriptName"
-$Global:ModuleScriptPath = "$PSScriptRoot\$ModuleScriptName"
+$Script:ModuleScriptPath = "$PSScriptRoot\$ModuleScriptName"
 # $ModuleScriptPathExists = Test-Path -LiteralPath $ModuleScriptPath
 # Write-Warning "`$ModuleScriptPath $ModuleScriptPath`t$ModuleScriptPathExists"
 Get-Module $ModuleName | Remove-Module -force
@@ -32,7 +32,7 @@ InModuleScope -ModuleName "PSWinTerminal" {
                 }
             }
         }
-        Context "Global Variable" -Fixture {
+        Context "Script Variable" -Fixture {
             It "PSWinTerminalCurentProfileHasColorScheme" {
                 { (Get-Variable -Name 'PSWinTerminalCurentProfileHasColorScheme' -ErrorAction Stop).Name } | Should -Not -Throw
                 (Get-Variable -Name 'PSWinTerminalCurentProfileHasColorScheme').Name | Should -BeExactly 'PSWinTerminalCurentProfileHasColorScheme'
