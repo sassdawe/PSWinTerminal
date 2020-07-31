@@ -104,7 +104,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = @("WinTerminal", "Windows Terminal", "Theme", "Settings")
+        Tags = @("WinTerminal", "WindowsTerminal", "Theme", "Settings", "Terminal")
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/sassdawe/PSWinTerminal/blob/main/LICENSE'
