@@ -1,4 +1,4 @@
-$Script:ModuleName = "PSWinTerminal"
+$Global:ModuleName = "PSWinTerminal"
 # Write-Warning "`$ModuleName $ModuleName"
 $Script:ModuleManifestName = "$ModuleName.psd1"
 # Write-Warning "`$ModuleManifestName $ModuleManifestName"
@@ -7,13 +7,13 @@ $Script:ModuleManifestPath = "$PSScriptRoot\$ModuleManifestName"
 # Write-Warning "`$ModuleManifestPath $ModuleManifestPath`t$ModuleManifestPathExists"
 $Script:ModuleScriptName = "$ModuleName.psm1"
 # Write-Warning "`$ModuleScriptName $ModuleScriptName"
-$Script:ModuleScriptPath = "$PSScriptRoot\$ModuleScriptName"
+$Global:ModuleScriptPath = "$PSScriptRoot\$ModuleScriptName"
 # $ModuleScriptPathExists = Test-Path -LiteralPath $ModuleScriptPath
 # Write-Warning "`$ModuleScriptPath $ModuleScriptPath`t$ModuleScriptPathExists"
 Get-Module $ModuleName | Remove-Module -force
 Import-Module $ModuleManifestPath
 
-InModuleScope -ModuleName "PSWinTerminal" {
+InModuleScope -ModuleName $ModuleName {
     Describe -Name "Validation tests of $ModuleName" -Tag "Script" -Fixture {
         Context -Name "Validation of file" -Fixture {
             It "$ModuleScriptName is a valid script file" {
@@ -24,7 +24,7 @@ InModuleScope -ModuleName "PSWinTerminal" {
             }
         }
         Context -Name "Public functions" -Fixture {
-            ForEach ( $function in (Get-Module PSWinTerminal).ExportedCommands.Keys ) {
+            ForEach ( $function in (Get-Module $ModuleName).ExportedCommands.Keys ) {
                 $functionDefinition = (Get-Command -Name $function).Definition
                 It "Function $function is advanced" {
                     $functionDefinition | Should -Match "CmdletBinding()"
