@@ -21,7 +21,7 @@ SOFTWARE.
 RootModule = 'PSWinTerminal.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0.0'
+ModuleVersion = '1.1.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -116,7 +116,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'First release with Get , Show, and Set-WTTheme support'
+        ReleaseNotes = 'Second release, with support for Windows Terminal Preview'
 
         # Prerelease string of this module
         # Prerelease = ''
