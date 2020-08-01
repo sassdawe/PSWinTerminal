@@ -1,7 +1,21 @@
 
 if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5))) {
-    $Script:PSWinTerminalConfigPath = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState\settings.json"
-    $Script:PSWinTerminalDefaultsPath = "C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.1.2021.0_x64__8wekyb3d8bbwe\defaults.json"
+    Write-Verbose "Identify WT version"
+    if ($IsWindows) {
+        Write-Verbose "PowerShell 6+"
+        $Script:PSWinTerminalProcessPathFolder = (Get-Process -id $PID).Parent.Path | Split-Path
+    } else {
+        Write-Verbose "Windows PowerShell"
+        $Script:PSWinTerminalProcessPathFolder = (Get-Process -id $((Get-CimInstance -Query "SELECT * FROM Win32_Process WHERE ProcessID = $pid").ParentProcessID)).Path | split-path
+    }
+    Write-Verbose "Setting path to json files."
+    if ( $Script:PSWinTerminalProcessPathFolder.contains('WindowsTerminalPreview') ) {
+        $Script:PSWinTerminalConfigPath = "$env:LocalAppData\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe/LocalState\settings.json"
+        $Script:PSWinTerminalDefaultsPath = "$Script:PSWinTerminalProcessPathFolder\defaults.json"
+    } else {
+        $Script:PSWinTerminalConfigPath = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState\settings.json"
+        $Script:PSWinTerminalDefaultsPath = "$Script:PSWinTerminalProcessPathFolder\defaults.json"
+    }
 
     if ( ( Test-Path -LiteralPath $Script:PSWinTerminalDefaultsPath) ) {
         $Script:PSWinTerminalDefaults = (Get-Content -LiteralPath $Script:PSWinTerminalDefaultsPath | Where-Object { -not $_.Trim().StartsWith('//') } ) | ConvertFrom-Json
