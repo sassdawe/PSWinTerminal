@@ -66,4 +66,40 @@ InModuleScope -ModuleName $ModuleName {
             }
         }
     }
+    Describe -Name "Specific tests of $ModuleName" -Tag "Importer" -Fixture {
+        $Global:Error.Clear()
+        Context "Import-WTTheme" {
+            It "Import-WTTheme Good" {
+                '{"name": "X Dotshare","black": "#101010","red": "#E84F4F","green": "#B8D68C","yellow": "#E1AA5D","blue": "#7DC1CF","purple": "#9B64FB","cyan": "#6D878D","white": "#DDDDDD","brightBlack": "#404040","brightRed": "#D23D3D","brightGreen": "#A0CF5D","brightYellow": "#F39D21","brightBlue": "#4E9FB1","brightPurple": "#8542FF","brightCyan": "#42717B","brightWhite": "#DDDDDD","background": "#151515","foreground": "#D7D0C7"}' | clip.exe
+                Start-Sleep -Seconds 1
+                Import-WTTheme -Verbose:$false | Should -BeExactly "X Dotshare"
+                Start-Sleep -Seconds 1
+                Set-WTTheme 'X Dotshare'
+                Start-Sleep -Seconds 1
+                Get-WTTheme | Should -BeExactly "X Dotshare"
+                Start-Sleep -Seconds 1
+            }
+            It "Import-WTTheme Bad: Existing name" {
+                '{"acrylicOpacity" : 0.5,"backgroundImage" : "Sitecore-Dark2.png","backgroundImageOpacity" : 0.80000001192092896,"backgroundImageStretchMode" : "uniformToFill","closeOnExit" : true,"colorScheme" : "Campbell","commandline" : "powershell.exe","cursorColor" : "#FFFFFF","cursorShape" : "bar","fontFace" : "Consolas","fontSize" : 10,"guid" : "{0caa0dad-35be-5f56-a8ff-afceeeaa6102}","historySize" : 9001,"icon" : "sitecore-icon.png","name" : "Campbell","padding" : "0, 0, 0, 0","snapOnInput" : true,"startingDirectory" : "%USERPROFILE%","useAcrylic" : false}' | clip.exe
+                Start-Sleep -Seconds 1
+                { Import-WTTheme } | Should -Throw
+            }
+            It "Import-WTTheme Bad: Missing name" {
+                '{"acrylicOpacity" : 0.5,"backgroundImage" : "Sitecore-Dark2.png","backgroundImageOpacity" : 0.80000001192092896,"backgroundImageStretchMode" : "uniformToFill","closeOnExit" : true,"colorScheme" : "Campbell","commandline" : "powershell.exe","cursorColor" : "#FFFFFF","cursorShape" : "bar","fontFace" : "Consolas","fontSize" : 10,"guid" : "{0caa0dad-35be-5f56-a8ff-afceeeaa6102}","historySize" : 9001,"icon" : "sitecore-icon.png","padding" : "0, 0, 0, 0","snapOnInput" : true,"startingDirectory" : "%USERPROFILE%","useAcrylic" : false}' | clip.exe
+                Start-Sleep -Seconds 1
+                { Import-WTTheme } | Should -Throw
+            }
+            It "Import-WTTheme Bad" {
+                '{"acrylicOpacity" : 0.5,"backgroundImage" : "Sitecore-Dark2.png","backgroundImageOpacity" : 0.80000001192092896,"closeOnExit" : true,"colorScheme" : "Campbell","commandline" : "powershell.exe","cursorColor" : "#FFFFFF","cursorShape" : "bar","fontFace" : "Consolas","fontSize" : 10,"guid" : "{0caa0dad-35be-5f56-a8ff-afceeeaa6102}","historySize" : 9001,"icon" : "sitecore-icon.png","name" : "Sitecore","padding" : "0, 0, 0, 0","snapOnInput" : true,"startingDirectory" : "%USERPROFILE%","useAcrylic" : false}' | clip.exe
+                Start-Sleep -Seconds 1
+                { Import-WTTheme } | Should -Throw
+            }
+            It "Import-WTTheme Bad 2" {
+                'P4S$W0rd!' | clip.exe
+                Start-Sleep -Seconds 1
+                { Import-WTTheme } | Should -Throw
+            }
+        }
+        Restore-WTConfig -Verbose -Confirm:$false
+    }
 }
