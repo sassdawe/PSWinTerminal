@@ -21,7 +21,7 @@ SOFTWARE.
 RootModule = 'PSWinTerminal.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.2.0'
+ModuleVersion = '1.3.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -78,7 +78,7 @@ Description = 'PowerShell module to manipulate Windows Terminal'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @('Get-WTTheme','Show-WTTheme','Set-WTTheme','Restore-WTConfig')
+FunctionsToExport = @('Get-WTTheme','Show-WTTheme','Set-WTTheme','Restore-WTConfig','Import-WTTheme')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 #CmdletsToExport = @()
@@ -116,7 +116,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Third release, with ArgumentCompleter for Set-WTTheme, and with Restore-WTConfig'
+        ReleaseNotes = 'Fourth release, with Import-WTTheme - it grabs the valid json schema from your clipboard'
 
         # Prerelease string of this module
         # Prerelease = ''
