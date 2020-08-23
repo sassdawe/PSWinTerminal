@@ -21,7 +21,7 @@ SOFTWARE.
 RootModule = 'PSWinTerminal.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.3.1'
+ModuleVersion = '1.3.2'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -116,7 +116,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Fourth release, with Import-WTTheme - it grabs the valid json schema from your clipboard'
+        ReleaseNotes = 'Fourth release, with Import-WTTheme - it grabs the valid json schema from your clipboard, added help'
 
         # Prerelease string of this module
         # Prerelease = ''

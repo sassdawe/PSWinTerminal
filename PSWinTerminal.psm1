@@ -315,6 +315,22 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
     Register-ArgumentCompleter -CommandName 'Set-WTTheme' -ParameterName 'Theme' -ScriptBlock { param($commandName, $parameterName, $stringMatch) Initialize-WTThemeList | Where-Object { $_ -like "$stringMatch*" } | Where-Object { -not [System.String]::IsNullOrEmpty($_) } | ForEach-Object { "`'$_`'" } }
 
     function Import-WTTheme {
+        <#
+            .SYNOPSIS
+                Import-WTTheme
+            .DESCRIPTION
+                Import-WTTheme will import a valid scheme in JSON format from your clipboard
+            .INPUTS
+                [System.String] The content of your clipboard
+            .OUTPUTS
+                [System.String] The name of the imported theme
+            .NOTES
+                You need to copy the scheme you want to import to your clipboard
+            .LINK
+                Sites to look for themes for Windows Terminal:
+                https://terminalsplash.com/
+                https://atomcorp.github.io/themes/
+        #>
         [CmdletBinding(SupportsShouldProcess = $true)]
         param (
 
