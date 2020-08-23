@@ -1,5 +1,6 @@
 
 if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5))) {
+    #region init
     Write-Verbose "Identify WT version"
     if ($IsWindows) {
         Write-Verbose "PowerShell 6+"
@@ -27,6 +28,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
     if ( ( Test-Path -LiteralPath $Script:PSWinTerminalConfigPath) ) {
         $Script:PSWinTerminalOriginalConfig = Get-Content $Script:PSWinTerminalConfigPath
     }
+    #endregion init
 
     function Initialize-PSWinTerminalConfig {
         [CmdletBinding()]
@@ -83,6 +85,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
                 try {
                     $Script:PSWinTerminalOriginalConfig | Set-Content -LiteralPath $Script:PSWinTerminalConfigPath
                     Initialize-PSWinTerminalConfig
+                    Write-Verbose "Windows Terminal settings have been restored"
                 }
                 catch {
                     Write-Warning "Oh something went sideways: $_"
@@ -191,7 +194,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
             $WTThemes = New-Object System.Collections.ArrayList
             $Script:PSWinTerminalDefaultThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
             $Script:PSWinTerminalThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
-            Write-Verbose $WTThemes.Count
+            Write-Verbose "Count of themes: $($WTThemes.Count)"
             $WTThemes.ToArray() | Sort-Object
         }
 
@@ -309,7 +312,83 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         }
     }
 
-    Register-ArgumentCompleter -CommandName 'Set-WTTheme' -ParameterName 'Theme' -ScriptBlock { param($commandName,$parameterName,$stringMatch) Initialize-WTThemeList | Where-Object { $_ -like "$stringMatch*"} | Where-Object {-not [System.String]::IsNullOrEmpty($_)} | ForEach-Object {"`'$_`'"} }
+    Register-ArgumentCompleter -CommandName 'Set-WTTheme' -ParameterName 'Theme' -ScriptBlock { param($commandName, $parameterName, $stringMatch) Initialize-WTThemeList | Where-Object { $_ -like "$stringMatch*" } | Where-Object { -not [System.String]::IsNullOrEmpty($_) } | ForEach-Object { "`'$_`'" } }
+
+    function Import-WTTheme {
+        [CmdletBinding(SupportsShouldProcess = $true)]
+        param (
+
+        )
+
+        begin {
+            Write-Warning "Note: if you accidently break your Terminal's config, you can restore it with 'Restore-WTConfig'"
+            Write-Verbose "Note: if you accidently break your Terminal's config, you can restore it with 'Restore-WTConfig'"
+        }
+
+        process {
+            $clipboard = Get-Clipboard
+            Write-Verbose "$clipboard"
+            try {
+                $clipboardJSON = ConvertFrom-Json -InputObject "$clipboard"
+                if ( $clipboardJSON.name -in (Initialize-WTThemeList -Verbose:$false) ) { Throw "Theme with name `'$($clipboardJSON.name)`' already exists, cannot import this theme!" }
+                if ( $clipboardJSON.name -and (($clipboardJSON | Get-Member -MemberType NoteProperty).count -ge 19 )) {
+                    $currentSchemesStartLine = 0
+                    $hasCustomTheme = $false
+                    $content = Get-Content -LiteralPath $Script:PSWinTerminalConfigPath
+                    :schemes Foreach ( $line in $content ) {
+                        if ( $line.contains("`"schemes`": [") ) {
+                            Write-Verbose "Line: $line"
+                            if ( -not $line.EndsWith('],') ) {
+                                $hasCustomTheme = $true
+                            }
+                            $currentSchemesStartLine += 1
+                            break schemes
+                        }
+                        else {
+                            $currentSchemesStartLine += 1
+                        }
+                    }
+                    Write-Verbose "Schema start line: $currentSchemesStartLine"
+                    if ( $false -eq $hasCustomTheme ) {
+                        $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
+                            if ( ($i -eq ($currentSchemesStartLine -1) ) ) {
+                                "`"schemes`": ["
+                                "$($clipboardJSON | ConvertTo-Json | Out-String)"
+                                "],"
+                            }
+                            else {
+                                $content[$i]
+                            }
+                        }
+                    }
+                    else {
+                        $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
+                            if ( ($i -eq $currentSchemesStartLine ) ) {
+                                "$($clipboardJSON | ConvertTo-Json | Out-String),"
+                                $content[$i]
+                            }
+                            else {
+                                $content[$i]
+                            }
+                        }
+                    }
+                    $newConfig | Set-Content -LiteralPath $Script:PSWinTerminalConfigPath -PassThru:$false
+                    Initialize-PSWinTerminalConfig
+                    $clipboardJSON.name
+                }
+                else {
+                    Throw "The validation of the Theme `'$($clipboardJSON.name)`' failed, please check again"
+                }
+            }
+            catch {
+                Throw $_
+            }
+        }
+
+        end {
+
+        }
+    }
 
     Initialize-PSWinTerminalConfig
 
