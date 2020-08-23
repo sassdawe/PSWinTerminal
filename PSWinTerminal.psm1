@@ -194,7 +194,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
             $WTThemes = New-Object System.Collections.ArrayList
             $Script:PSWinTerminalDefaultThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
             $Script:PSWinTerminalThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
-            Write-Verbose $WTThemes.Count
+            Write-Verbose "Count of themes: $($WTThemes.Count)"
             $WTThemes.ToArray() | Sort-Object
         }
 
@@ -330,7 +330,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
             Write-Verbose "$clipboard"
             try {
                 $clipboardJSON = ConvertFrom-Json -InputObject "$clipboard"
-                if ( $clipboardJSON.name -in (Initialize-WTThemeList) ) { Throw "Theme with name `'$($clipboardJSON.name)`' already exists, cannot import this theme!"}
+                if ( $clipboardJSON.name -in (Initialize-WTThemeList -Verbose:$false) ) { Throw "Theme with name `'$($clipboardJSON.name)`' already exists, cannot import this theme!"}
                 if ( $clipboardJSON.name -and (($clipboardJSON | Get-Member -MemberType NoteProperty).count -ge 19 )) {
                     $currentSchemesStartLine = 0
                     $content = Get-Content -LiteralPath $Script:PSWinTerminalConfigPath
@@ -343,7 +343,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
                             $currentSchemesStartLine += 1
                         }
                     }
-                    Write-Warning $currentSchemesStartLine
+                    Write-Verbose "Schema start line: $currentSchemesStartLine"
 
                     $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
                         if ( ($i -eq $currentSchemesStartLine ) ) {
