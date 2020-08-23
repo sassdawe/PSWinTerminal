@@ -21,7 +21,7 @@ SOFTWARE.
 RootModule = 'PSWinTerminal.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.3.0'
+ModuleVersion = '1.3.1'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()

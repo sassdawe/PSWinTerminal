@@ -312,7 +312,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         }
     }
 
-    Register-ArgumentCompleter -CommandName 'Set-WTTheme' -ParameterName 'Theme' -ScriptBlock { param($commandName,$parameterName,$stringMatch) Initialize-WTThemeList | Where-Object { $_ -like "$stringMatch*"} | Where-Object {-not [System.String]::IsNullOrEmpty($_)} | ForEach-Object {"`'$_`'"} }
+    Register-ArgumentCompleter -CommandName 'Set-WTTheme' -ParameterName 'Theme' -ScriptBlock { param($commandName, $parameterName, $stringMatch) Initialize-WTThemeList | Where-Object { $_ -like "$stringMatch*" } | Where-Object { -not [System.String]::IsNullOrEmpty($_) } | ForEach-Object { "`'$_`'" } }
 
     function Import-WTTheme {
         [CmdletBinding(SupportsShouldProcess = $true)]
@@ -330,12 +330,17 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
             Write-Verbose "$clipboard"
             try {
                 $clipboardJSON = ConvertFrom-Json -InputObject "$clipboard"
-                if ( $clipboardJSON.name -in (Initialize-WTThemeList -Verbose:$false) ) { Throw "Theme with name `'$($clipboardJSON.name)`' already exists, cannot import this theme!"}
+                if ( $clipboardJSON.name -in (Initialize-WTThemeList -Verbose:$false) ) { Throw "Theme with name `'$($clipboardJSON.name)`' already exists, cannot import this theme!" }
                 if ( $clipboardJSON.name -and (($clipboardJSON | Get-Member -MemberType NoteProperty).count -ge 19 )) {
                     $currentSchemesStartLine = 0
+                    $hasCustomTheme = $false
                     $content = Get-Content -LiteralPath $Script:PSWinTerminalConfigPath
                     :schemes Foreach ( $line in $content ) {
                         if ( $line.contains("`"schemes`": [") ) {
+                            Write-Verbose "Line: $line"
+                            if ( -not $line.EndsWith('],') ) {
+                                $hasCustomTheme = $true
+                            }
                             $currentSchemesStartLine += 1
                             break schemes
                         }
@@ -344,20 +349,34 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
                         }
                     }
                     Write-Verbose "Schema start line: $currentSchemesStartLine"
-
-                    $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
-                        if ( ($i -eq $currentSchemesStartLine ) ) {
-                            "$($clipboardJSON | ConvertTo-Json | Out-String),"
-                            $content[$i]
+                    if ( $false -eq $hasCustomTheme ) {
+                        $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
+                            if ( ($i -eq ($currentSchemesStartLine -1) ) ) {
+                                "`"schemes`": ["
+                                "$($clipboardJSON | ConvertTo-Json | Out-String)"
+                                "],"
+                            }
+                            else {
+                                $content[$i]
+                            }
                         }
-                        else {
-                            $content[$i]
+                    }
+                    else {
+                        $newConfig = for ($i = 0; $i -lt $content.Length; $i++ ) {
+                            if ( ($i -eq $currentSchemesStartLine ) ) {
+                                "$($clipboardJSON | ConvertTo-Json | Out-String),"
+                                $content[$i]
+                            }
+                            else {
+                                $content[$i]
+                            }
                         }
                     }
                     $newConfig | Set-Content -LiteralPath $Script:PSWinTerminalConfigPath -PassThru:$false
                     Initialize-PSWinTerminalConfig
                     $clipboardJSON.name
-                } else {
+                }
+                else {
                     Throw "The validation of the Theme `'$($clipboardJSON.name)`' failed, please check again"
                 }
             }
