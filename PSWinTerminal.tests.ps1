@@ -14,7 +14,7 @@ Get-Module $ModuleName | Remove-Module -force
 Import-Module $ModuleManifestPath
 
 InModuleScope -ModuleName $ModuleName {
-    Describe -Name "Validation tests of $ModuleName" -Tag "Script" -Fixture {
+    Describe -Name "Validation tests of $ModuleName" -Tag "Module" -Fixture {
         Context -Name "Validation of file" -Fixture {
             It "$ModuleScriptName is a valid script file" {
                 $script = Get-Content -LiteralPath $ModuleScriptPath -ErrorAction Stop
@@ -32,6 +32,8 @@ InModuleScope -ModuleName $ModuleName {
                 }
             }
         }
+    }
+    Describe -Name "Validation tests of $ModuleName" -Tag "Functions" -Fixture {
         Context "Script Variable" -Fixture {
             It "PSWinTerminalCurentProfileHasColorScheme" {
                 { (Get-Variable -Name 'PSWinTerminalCurentProfileHasColorScheme' -ErrorAction Stop).Name } | Should -Not -Throw
@@ -101,5 +103,26 @@ InModuleScope -ModuleName $ModuleName {
             }
         }
         Restore-WTConfig -Verbose -Confirm:$false
+        "" | clip.exe
+    }
+
+    Describe -Name "Specific tests of $ModuleName" -Tag "Marketplace" -Fixture {
+        Context "Marketplace functions" {
+            It "Find-WTTheme" {
+                {Get-Command -Name "Find-WTTheme" -ErrorAction Stop} | Should -Not -Throw
+            }
+            It "Get-WTThemeSource" {
+                {Get-Command -Name "Get-WTThemeSource" -ErrorAction Stop} | Should -Not -Throw
+            }
+            It "Register-WTThemeSource" {
+                {Get-Command -Name "Register-WTThemeSource" -ErrorAction Stop} | Should -Not -Throw
+            }
+            It "Unregister-WTThemeSource" {
+                {Get-Command -Name "Unregister-WTThemeSource" -ErrorAction Stop} | Should -Not -Throw
+            }
+            It "Install-WTTheme" {
+                {Get-Command -Name "Install-WTTheme" -ErrorAction Stop} | Should -Not -Throw
+            }
+        }
     }
 }
