@@ -13,11 +13,15 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
     Write-Verbose "Setting path to json files."
     if ( $Script:PSWinTerminalProcessPathFolder.contains('WindowsTerminalPreview') ) {
         $Script:PSWinTerminalConfigPath = "$env:LocalAppData\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+        $Script:PSWinTerminalConfigFolder = "$env:LocalAppData\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
         $Script:PSWinTerminalDefaultsPath = "$Script:PSWinTerminalProcessPathFolder\defaults.json"
+        $Script:PSWinTerminalIsPreview = $true
     }
     else {
         $Script:PSWinTerminalConfigPath = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+        $Script:PSWinTerminalConfigFolder = "$env:LocalAppData\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
         $Script:PSWinTerminalDefaultsPath = "$Script:PSWinTerminalProcessPathFolder\defaults.json"
+        $Script:PSWinTerminalIsPreview = $false
     }
 
     if ( ( Test-Path -LiteralPath $Script:PSWinTerminalDefaultsPath) ) {
@@ -53,6 +57,41 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         end {
         }
     }
+    function Save-CurrentSettingsOfProfile {
+        <#
+            .SYNOPSIS
+                Save-CurrentSettingsOfProfile
+            .DESCRIPTION
+                Save-CurrentSettingsOfProfile is a private function, designed to save the settings of the current profile before making termporary changes.
+                These settings are saved into WindowsTerminal's LocalState folder.
+            .PARAMETER
+            .PARAMETER
+            .INPUTS
+            .OUTPUTS
+            .EXAMPLE
+            .EXAMPLE
+            .NOTES
+            .LINK
+        #>
+        [CmdletBinding()]
+        param (
+            
+        )
+        
+        begin {
+            
+        }
+        
+        process {
+            
+        }
+        
+        end {
+            
+        }
+    }
+
+    # TODO: Can a variable auto load a module?
 
     function Restore-WTConfig {
         <#
