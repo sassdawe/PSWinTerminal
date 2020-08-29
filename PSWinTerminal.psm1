@@ -34,6 +34,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
     }
     #endregion init
 
+    #region private
     function Initialize-PSWinTerminalConfig {
         [CmdletBinding()]
         param (
@@ -57,12 +58,13 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         end {
         }
     }
+
     function Save-CurrentSettingsOfProfile {
         <#
             .SYNOPSIS
                 Save-CurrentSettingsOfProfile
             .DESCRIPTION
-                Save-CurrentSettingsOfProfile is a private function, designed to save the settings of the current profile before making termporary changes.
+                Save-CurrentSettingsOfProfile is a private function, designed to save the settings of the current profile before making temporary changes.
                 These settings are saved into WindowsTerminal's LocalState folder.
             .PARAMETER
             .PARAMETER
@@ -91,8 +93,44 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         }
     }
 
+    function Initialize-WTThemeList {
+        <#
+            .SYNOPSIS
+                Initialize-WTThemeList
+            .DESCRIPTION
+                Initialize-WTThemeList
+            .INPUTS
+                These is no input for Initialize-WTThemeList
+            .OUTPUTS
+                Array of available themes.
+            .EXAMPLE
+            .LINK
+                https://github.com/sassdawe/PSWinTerminal
+        #>
+        [CmdletBinding()]
+        param (
+        )
+
+        begin {
+
+        }
+
+        process {
+            $WTThemes = New-Object System.Collections.ArrayList
+            $Script:PSWinTerminalDefaultThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
+            $Script:PSWinTerminalThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
+            Write-Verbose "Count of themes: $($WTThemes.Count)"
+            $WTThemes.ToArray() | Sort-Object
+        }
+
+        end {
+
+        }
+    }
+    #endregion private
     # TODO: Can a variable auto load a module?
 
+    #region public
     function Restore-WTConfig {
         <#
             .SYNOPSIS
@@ -207,40 +245,7 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
 
         }
     }
-    function Initialize-WTThemeList {
-        <#
-            .SYNOPSIS
-                Initialize-WTThemeList
-            .DESCRIPTION
-                Initialize-WTThemeList
-            .INPUTS
-                These is no input for Initialize-WTThemeList
-            .OUTPUTS
-                Array of available themes.
-            .EXAMPLE
-            .LINK
-                https://github.com/sassdawe/PSWinTerminal
-        #>
-        [CmdletBinding()]
-        param (
-        )
 
-        begin {
-
-        }
-
-        process {
-            $WTThemes = New-Object System.Collections.ArrayList
-            $Script:PSWinTerminalDefaultThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
-            $Script:PSWinTerminalThemes | ForEach-Object { $null = $WTThemes.Add("$_") }
-            Write-Verbose "Count of themes: $($WTThemes.Count)"
-            $WTThemes.ToArray() | Sort-Object
-        }
-
-        end {
-
-        }
-    }
     function Set-WTTheme {
         <#
             .SYNOPSIS
@@ -351,8 +356,6 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
         }
     }
 
-    Register-ArgumentCompleter -CommandName 'Set-WTTheme' -ParameterName 'Theme' -ScriptBlock { param($commandName, $parameterName, $stringMatch) Initialize-WTThemeList | Where-Object { $_ -like "$stringMatch*" } | Where-Object { -not [System.String]::IsNullOrEmpty($_) } | ForEach-Object { "`'$_`'" } }
-
     function Import-WTTheme {
         <#
             .SYNOPSIS
@@ -444,6 +447,10 @@ if ($env:WT_SESSION -and ($IsWindows -or ($PSVersionTable.PSVersion.Major -le 5)
 
         }
     }
+
+    Register-ArgumentCompleter -CommandName 'Set-WTTheme' -ParameterName 'Theme' -ScriptBlock { param($commandName, $parameterName, $stringMatch) Initialize-WTThemeList | Where-Object { $_ -like "$stringMatch*" } | Where-Object { -not [System.String]::IsNullOrEmpty($_) } | ForEach-Object { "`'$_`'" } }
+
+    #endregion public
 
     Initialize-PSWinTerminalConfig
 
